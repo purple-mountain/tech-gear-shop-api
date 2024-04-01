@@ -8,6 +8,60 @@ datasource db {
 }
 
 model User {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(255)
+  id     Int      @id @default(autoincrement())
+  name   String   @db.VarChar(255)
+  review Review[] @relation("reviewAuthor")
+  order  Order[]
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String    @db.VarChar(255)
+  products Product[] @relation("products")
+}
+
+model Product {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(255)
+  price              Float
+  category           Category             @relation("products", fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId         Int
+  imageId            String?
+  review             Review[]             @relation("productReview")
+  productOrderDetail ProductOrderDetail[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductOrderDetail {
+  id        Int     @id @default(autoincrement())
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  quantity  Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
+}
+
+model Order {
+  id                 Int                  @id @default(autoincrement())
+  ProductOrderDetail ProductOrderDetail[]
+  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id        Int     @id @default(autoincrement())
+  product   Product @relation("productReview", fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  user      User    @relation("reviewAuthor", fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  rating    Int
+  text      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
