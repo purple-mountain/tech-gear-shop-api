@@ -1,13 +1,19 @@
 import { Module } from "@nestjs/common";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
 import { ConfigModule } from "@nestjs/config";
-import { DbModule } from "./db/db.module";
 import { AuthModule } from "./auth/auth.module";
+import { PrismaModule } from "./providers/prisma/prisma.module";
+import { CategoryModule } from "./modules/category/category.module";
+import { RedisCacheModule } from "./providers/cache/redis/redis-cache.module";
 
 @Module({
-    imports: [ConfigModule.forRoot(), DbModule, AuthModule],
-    controllers: [AppController],
-    providers: [AppService],
+    imports: [
+        ConfigModule.forRoot(),
+        RedisCacheModule,
+        PrismaModule,
+        AuthModule,
+        CategoryModule,
+    ],
+    controllers: [],
+    providers: [],
 })
 export class AppModule {}
