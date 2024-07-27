@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
+
 async function main() {
     const laptops = await prisma.category.upsert({
         where: { id: 1 },
@@ -53,6 +54,7 @@ async function main() {
     });
     console.log({ laptops, headphones });
 }
+
 main()
     .then(async () => {
         await prisma.$disconnect();

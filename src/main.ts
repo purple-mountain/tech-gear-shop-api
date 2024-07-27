@@ -9,10 +9,11 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService);
     patchNestJsSwagger();
+
     const config = new DocumentBuilder()
         .setTitle("Tech Gear API")
         .setDescription("Tech Gear API Description")
-        .setVersion("0.1")
+        .setVersion("0.2")
         .addOAuth2(
             {
                 type: "oauth2",
@@ -36,7 +37,9 @@ async function bootstrap() {
             "Auth0",
         )
         .build();
+
     const document = SwaggerModule.createDocument(app, config);
+
     app.enableCors();
     app.useGlobalFilters(new ZodValidationFilter());
     SwaggerModule.setup("api", app, document, {
