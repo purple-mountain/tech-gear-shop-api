@@ -11,10 +11,15 @@ import {
     UseGuards,
 } from "@nestjs/common";
 import { CategoryService } from "../services/category.service";
-import { AuthGuard } from "@nestjs/passport";
-import { CategoryDto, categorySchema } from "../dto/category.dto";
+import {
+    CategoryReqBodyDto,
+    CategoryResBodyDto,
+    CategoryWithProductsResBodyDto,
+    categoryReqBodySchema,
+} from "../dto/category.dto";
 import { ZodValidationPipe } from "src/common/pipes/zod-validation.pipe";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 
 @ApiTags("Categories")
 @Controller("category")
@@ -22,12 +27,12 @@ export class CategoryController {
     constructor(private readonly categoryService: CategoryService) {}
 
     @ApiOperation({
-        summary: "Get Categories",
+        summary: "Get All Categories",
     })
     @ApiResponse({
         status: 200,
-        description: "Get Categories",
-        type: [CategoryDto],
+        description: "Get All Categories",
+        type: [CategoryResBodyDto],
     })
     @Get()
     getAll() {
@@ -36,26 +41,26 @@ export class CategoryController {
 
     @Get(":id")
     @ApiOperation({
-        summary: "Get Category",
+        summary: "Get One Category",
     })
     @ApiResponse({
         status: 200,
-        description: "Get Category",
-        type: [CategoryDto],
+        description: "Get One Category",
+        type: [CategoryWithProductsResBodyDto],
     })
     getOne(@Param("id", ParseIntPipe) id: number) {
         return this.categoryService.getOne(id);
     }
 
     @ApiBearerAuth("Auth0")
-    @UseGuards(AuthGuard("jwt"))
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({
-        summary: "Delete Category",
+        summary: "Delete One Category",
     })
     @ApiResponse({
         status: 200,
-        description: "Delete Category",
-        type: [CategoryDto],
+        description: "Delete One Category",
+        type: [CategoryResBodyDto],
     })
     @Delete(":id")
     deleteOne(@Param("id", ParseIntPipe) id: number) {
@@ -63,14 +68,13 @@ export class CategoryController {
     }
 
     @ApiBearerAuth("Auth0")
-    @UseGuards(AuthGuard("jwt"))
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({
-        summary: "Delete Categories",
+        summary: "Delete Many Categories",
     })
     @ApiResponse({
         status: 200,
-        description: "Delete Categories",
-        type: [CategoryDto],
+        description: "Delete Many Categories",
     })
     @Delete()
     deleteMany(@Body(new ParseArrayPipe({ items: Number })) ids: number[]) {
@@ -78,38 +82,38 @@ export class CategoryController {
     }
 
     @ApiBearerAuth("Auth0")
-    @UseGuards(AuthGuard("jwt"))
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({
-        summary: "Create a Category",
+        summary: "Create One Category",
     })
     @ApiResponse({
         status: 200,
-        description: "Create a Category",
-        type: [CategoryDto],
+        description: "Create One Category",
+        type: [CategoryResBodyDto],
     })
     @Post()
     createOne(
-        @Body(new ZodValidationPipe(categorySchema))
-        createCategory: CategoryDto,
+        @Body(new ZodValidationPipe(categoryReqBodySchema))
+        createCategory: CategoryReqBodyDto,
     ) {
         return this.categoryService.createOne(createCategory);
     }
 
     @ApiBearerAuth("Auth0")
-    @UseGuards(AuthGuard("jwt"))
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({
-        summary: "Edit Category Name",
+        summary: "Edit One Category Name",
     })
     @ApiResponse({
         status: 200,
-        description: "Edit Category Name",
-        type: [CategoryDto],
+        description: "Edit One Category Name",
+        type: [CategoryResBodyDto],
     })
     @Patch(":id")
     editOne(
         @Param("id", ParseIntPipe) id: number,
-        @Body(new ZodValidationPipe(categorySchema))
-        editCategory: CategoryDto,
+        @Body(new ZodValidationPipe(categoryReqBodySchema))
+        editCategory: CategoryReqBodyDto,
     ) {
         return this.categoryService.editOne(id, editCategory);
     }
