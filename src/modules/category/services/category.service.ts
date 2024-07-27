@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { RedisCacheService } from "src/providers/cache/redis/redis-cache.service";
 import { PrismaService } from "src/providers/prisma/prisma.service";
-import { CategoryDto } from "../dto/category.dto";
+import { CategoryReqBodyDto } from "../dto/category.dto";
 
 @Injectable()
 export class CategoryService {
@@ -16,7 +16,7 @@ export class CategoryService {
         const cachedData = await this.cacheManager.getData("category", id.toString());
         if (cachedData) {
             this.cacheManager.setExpiryTime("category", 60 * 60 * 24 * 14, "GT");
-            console.log(cachedData);
+            console.log("Cache hit: ", cachedData);
             return cachedData;
         }
         const category = await this.prismaService.category.findUnique({
@@ -39,12 +39,12 @@ export class CategoryService {
             where: { id: { in: ids } },
         });
     }
-    async createOne(category: CategoryDto) {
+    async createOne(category: CategoryReqBodyDto) {
         return this.prismaService.category.create({
             data: category,
         });
     }
-    async editOne(id: number, category: CategoryDto) {
+    async editOne(id: number, category: CategoryReqBodyDto) {
         const cacheExists = await this.cacheManager.dataExists("category", id.toString());
         if (cacheExists) {
             this.cacheManager.setData("category", id.toString(), category);
