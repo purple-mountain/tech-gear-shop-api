@@ -27,7 +27,7 @@ const categoryWithProductsResBodySchema = z.object({
                 .max(255, { message: "Name cannot be more than 255 characters long" }),
             price: z.number(),
             categoryId: z.number().int(),
-            imageId: z.string().optional(),
+            imageId: z.string().nullable(),
             createdAt: z.date(),
             updatedAt: z.date(),
         })
