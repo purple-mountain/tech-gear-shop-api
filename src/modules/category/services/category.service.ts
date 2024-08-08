@@ -51,8 +51,9 @@ export class CategoryService {
 
     async editOne(id: number, category: CategoryReqBodyDto) {
         const cacheExists = await this.cacheManager.dataExists("category", id.toString());
+
         if (cacheExists) {
-            this.cacheManager.setData("category", id.toString(), category);
+            this.cacheManager.deleteData("category", id.toString());
         }
 
         return this.prismaService.category.update({

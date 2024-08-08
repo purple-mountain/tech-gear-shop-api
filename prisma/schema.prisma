@@ -23,7 +23,7 @@ model Category {
 model Product {
   id                 Int                  @id @default(autoincrement())
   name               String               @db.VarChar(255)
-  price              Float
+  price              BigInt
   category           Category             @relation("products", fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId         Int
   imageId            String?
