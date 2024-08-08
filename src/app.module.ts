@@ -4,6 +4,7 @@ import { AuthModule } from "./auth/auth.module";
 import { PrismaModule } from "./providers/prisma/prisma.module";
 import { CategoryModule } from "./modules/category/category.module";
 import { RedisCacheModule } from "./providers/cache/redis/redis-cache.module";
+import { ProductModule } from "./modules/product/product.module";
 
 @Module({
     imports: [
@@ -12,6 +13,7 @@ import { RedisCacheModule } from "./providers/cache/redis/redis-cache.module";
         PrismaModule,
         AuthModule,
         CategoryModule,
+        ProductModule,
     ],
     controllers: [],
     providers: [],
